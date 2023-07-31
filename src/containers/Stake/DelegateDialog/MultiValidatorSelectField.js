@@ -10,11 +10,15 @@ const colors = ['#0023DA', '#C9387E', '#EC2C00', '#80E3F2',
 const MultiValidatorSelectField = (props) => {
     const validatorList = [...props.validatorList];
     validatorList.push(...props.inActiveValidators);
+
+    const activeValidatorList = [...props.validatorList];
     const handleChange = (event) => {
         const value = event.target.value;
 
         if (value[value.length - 1] === 'all') {
             props.selectMultiValidators(props.selectedMultiValidatorArray.length === validatorList.length ? [] : (validatorList.map((item) => item.operator_address)));
+        } else if (value[value.length - 1] === 'active') {
+            props.selectMultiValidators(props.selectedMultiValidatorArray.length === activeValidatorList.length ? [] : (activeValidatorList.map((item) => item.operator_address)));
         } else {
             props.selectMultiValidators(typeof value === 'string' ? value.split(',') : value);
         }
@@ -26,6 +30,7 @@ const MultiValidatorSelectField = (props) => {
     };
 
     const isAllSelected = validatorList.length > 0 && props.selectedMultiValidatorArray.length === validatorList.length;
+    const isActiveSelected = activeValidatorList.length > 0 && props.selectedMultiValidatorArray.length === activeValidatorList.length;
 
     return (
         <>
@@ -66,6 +71,14 @@ const MultiValidatorSelectField = (props) => {
                         <ListItemText primary={'Select All'} />
                     </MenuItem>
                     <Divider className={'divider'} />
+                    <MenuItem className={'mv_menuItem'} value={'active'}>
+                        <ListItemIcon>
+                            <Checkbox checked={isActiveSelected} className={'checkbox'}/>
+                        </ListItemIcon>
+                        <ListItemText primary={'Select Active only'} />
+                    </MenuItem>
+                    <Divider className={'divider'} />
+
                     {validatorList && validatorList.length > 0 &&
                         validatorList.map((item, index) => {
                             const image = item && item.description && item.description.identity &&
